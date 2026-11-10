@@ -6,14 +6,22 @@ type TaskListProps = {
   tasks: Task[]
   onToggle: (id: string) => void
   onRemove: (id: string) => void
+  onRestore: (task: Task, index: number) => void
 }
 
-export function TaskList({ tasks, onToggle, onRemove }: TaskListProps) {
+export function TaskList({ tasks, onToggle, onRemove, onRestore }: TaskListProps) {
   return (
     <ul className="flex flex-col gap-3">
       <AnimatePresence initial={false} mode="popLayout">
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onToggle={onToggle} onRemove={onRemove} />
+        {tasks.map((task, index) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            index={index}
+            onToggle={onToggle}
+            onRemove={onRemove}
+            onRestore={onRestore}
+          />
         ))}
       </AnimatePresence>
     </ul>

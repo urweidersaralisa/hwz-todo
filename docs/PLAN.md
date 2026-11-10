@@ -8,52 +8,47 @@ Siehe docs/STACK.md. Keine Abweichungen.
 
 ## Ordner und Dateien
 
-- `src/features/tasks/model.ts`: Typ Task mit Schwierigkeitsgrad und reine Funktionen addTask, toggleTask, removeTask.
-- `src/features/tasks/model.test.ts`: Tests für das Modell.
-- `src/lib/storage.ts`: Zustand im localStorage lesen, schreiben, migrieren.
-- `src/lib/storage.test.ts`: Tests für die Ablage.
-- `src/features/tasks/useTasks.ts`: React-Hook, verbindet Modell mit Ablage.
-- `src/features/tasks/useTasks.test.ts`: Tests für den Hook.
-- `src/features/tasks/components/TaskInput.tsx`: Eingabefeld mit Plus-Knopf und Chili-Wahl.
-- `src/features/tasks/components/TaskInput.test.tsx`: Tests für die Eingabe.
-- `src/features/tasks/components/TaskList.tsx`: Liste mit Listen-Animation.
-- `src/features/tasks/components/TaskCard.tsx`: Karte mit Abhaken, Durchstreichen, Löschen.
-- `src/features/tasks/components/TaskCard.test.tsx`: Tests für die Karte.
-- `src/features/tasks/components/EmptyState.tsx`: Leerer Zustand mit Illustration.
-- `src/components/ProgressRing.tsx`: Fortschrittsring oben.
-- `src/components/ProgressRing.test.tsx`: Tests für den Ring.
-- `src/lib/celebrate.ts`: Konfetti + witzigen Spruch, im Test ersetzbar.
-- `src/lib/theme.ts`: Konfetti-Farben aus den CSS-Variablen lesen.
-- `src/lib/useHotkey.ts`: Hook für die N-Taste.
-- `src/App.tsx`: Rahmen mit Hero, Zähler, ProgressRing, Toaster.
+Bau 1 bleibt unverändert, wird nur erweitert:
+
+- `src/features/tasks/model.ts`: `Task.status` (todo/doing/done) statt `done`, neue Funktion `moveTask`.
+- `src/features/tasks/model.test.ts`: Tests für `moveTask` und den neuen Status.
+- `src/lib/storage.ts`: `CURRENT_VERSION = 2`, Migration `migrateV1toV2` für gespeicherte Aufgaben.
+- `src/lib/storage.test.ts`: Tests für die Migration mit echten Version-1-Daten.
+- `src/features/tasks/components/Board.tsx`: Scrum Board mit drei Spalten und Drag and Drop (Design Rezept 6).
+- `src/features/tasks/components/BoardColumn.tsx`: eine Spalte «Zu lernen», «Am Lernen» oder «Kann ich!».
+- `src/features/tasks/components/KanbanCard.tsx`: Karte im Board mit Chili-Icons; ersetzt die Checkbox durch Spalten-Logik.
+- `src/features/tasks/components/SprintHeader.tsx`: Sprint-Ziel und verbleibende Tage oben.
+- `src/lib/sprint.ts`: festes Enddatum und Funktion für die verbleibenden Tage, getestet.
+- `src/lib/sprint.test.ts`: Tests für die Tagesberechnung.
+- `src/App.tsx`: Rahmen mit SprintHeader statt Zähler, rendert Board statt TaskList.
 
 ## Datenmodell
 
 ```ts
 export type Difficulty = 1 | 2 | 3
+export type Status = 'todo' | 'doing' | 'done'
 
 export type Task = {
   id: string // crypto.randomUUID()
   title: string // getrimmt, 1 bis 200 Zeichen
   difficulty: Difficulty // 1 = 🌶️ easy, 2 = 🌶️🌶️ knifflig, 3 = 🌶️🌶️🌶️ brennt
-  done: boolean
+  status: Status // todo = «Zu lernen», doing = «Am Lernen», done = «Kann ich!»
   createdAt: number // Date.now()
 }
 ```
 
-localStorage `"hwz-todo"` = `{ version: 1, tasks: Task[] }`. Neue App, keine Migration nötig.
+localStorage `"hwz-todo"` = `{ version: 2, tasks: Task[] }`. Migration `migrateV1toV2` (docs/STACK.md, «Datenhaltung»): `done: true` → `status: 'done'`, `done: false` → `status: 'todo'`. Gespeicherte Aufgaben gehen nie verloren.
 
 ## Komponenten
 
-- TaskInput: Eingabefeld, Plus-Knopf und Auswahl des Schwierigkeitsgrads (Chili) vor dem Hinzufügen (DESIGN.md, Rezept 2).
-- TaskList: Liste aller Karten mit Ein-/Ausgleiten (DESIGN.md, Rezept 4).
-- TaskCard: Karte mit Checkbox (federt, Konfetti, Durchstreichen) und Löschen (Toast «Rückgängig»); zeigt die Chili-Icons (DESIGN.md, Rezept 3).
-- ProgressRing: zeigt gelernt/gesamt als Ring mit Zähler in der Mitte (DESIGN.md, Rezept 1).
-- EmptyState: Illustration des Looks und freundlicher Satz (DESIGN.md, Rezept 5).
-- App: Rahmen mit Hero, Datum, Zähler und Ring (DESIGN.md, Rezept 1).
+- SprintHeader: zeigt oben das Sprint-Ziel und «Noch N Tage» bis zum festen Enddatum (Design Rezept 1, Kopf).
+- Board: Raster mit drei Spalten, DndContext und SortableContext (Design Rezept 6).
+- BoardColumn: eine Spalte mit Überschrift, Zähler-Badge und Drag-and-Drop-Ziel (Design Rezept 6).
+- KanbanCard: Karte in einer Spalte, per Maus und Tastatur verschiebbar, Chili-Icons sichtbar (Design Rezept 3 angepasst).
+- App: Rahmen mit SprintHeader und Board, Toaster bleibt.
 
 ## Risiken
 
-- Konfetti und Spruch sollen beim Abhaken nur einmal und nicht bei reduzierter Bewegung laufen: zentriert in `src/lib/celebrate.ts`, prüft `prefers-reduced-motion`.
-- Daten nach dem Neuladen verloren: gesamter Zustand bei jeder Änderung speichern (`saveState`), Ablage in `src/lib/storage.ts` getestet.
-- Leere oder zu lange Titel zerstören die Liste: `addTask` ignoriert leere Titel und kürzt auf 200 Zeichen, mit Tests.
+- Bestehende Daten im localStorage (Version 1) passen nicht zum neuen Status: Migration mit eigenem Test und echten Version-1-Daten (AGENTS.md, Regel 9).
+- Drag and Drop ist anfällig für falsche Reihenfolge: `moveTask` als reine Funktion in model.ts mit Tests; DndContext-Sensoren mit Tastatur-Unterstützung.
+- Fester Sprint-Endtermin wird falsch gerechnet: Tagesberechnung in `src/lib/sprint.ts` mit Tests (Spring-/Winterzeit, Abrundung).

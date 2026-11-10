@@ -74,4 +74,22 @@ Candy
 
 ## Features
 
-(leer)
+### F1: Sprint-Board mit drei Spalten
+
+Verwandelt die Liste in ein Scrum Board für den Lern-Sprint: drei Spalten «Zu lernen», «Am Lernen», «Kann ich!», oben ein Sprint-Ziel und die verbleibenden Tage bis zum festen Enddatum. Die Chilis bleiben als Schwierigkeitsgrad. Die Datenhaltung wechselt von `done` (Bau 1) auf einen Spalten-`status`; gespeicherte Aufgaben gehen verlustfrei über (Migration).
+
+- Gegeben: Die App hat bereits Aufgaben aus Bau 1 mit `done` gespeichert.
+  - Wenn: Ich die neue Version öffne.
+  - Dann: sind alle Aufgaben noch da, offene stehen in «Zu lernen», abgehakte in «Kann ich!».
+- Gegeben: Es gibt Aufgaben in verschiedenen Lernstufen.
+  - Wenn: Ich die Seite öffne.
+  - Dann: sehe ich drei Spalten «Zu lernen», «Am Lernen», «Kann ich!» und jede Karte steht in der Spalte, die ihrem Status entspricht.
+- Gegeben: Eine Karte liegt in einer Spalte.
+  - Wenn: Ich sie per Drag and Drop in eine andere Spalte ziehe (auch per Tastatur).
+  - Dann: wechselt sie ihren Status, die Zielspalte leuchtet kurz auf und die Karte bleibt nach dem Neuladen in der neuen Spalte.
+- Gegeben: Die Seite zeigt das Board.
+  - Wenn: Ich oben schaue.
+  - Dann: sehe ich das Sprint-Ziel (z. B. «Prüfung bestehen») und darunter die Zahl der verbleibenden Tage bis zum festen Enddatum, z. B. «Noch 12 Tage».
+- Gegeben: Eine Karte hat einen Schwierigkeitsgrad.
+  - Wenn: Ich sie auf dem Board ansehe.
+  - Dann: zeigt sie weiterhin ihre Chilis (🌶️, 🌶️🌶️ oder 🌶️🌶️🌶️) unverändert.

@@ -39,14 +39,39 @@ Format je Task:
 - Test zuerst: Tippen + Enter zeigt die Aufgabe; Enter bei leerem Feld fügt nichts hinzu; «N» fokussiert das Feld.
 - Fertig wenn: DESIGN.md, Rezepte 2 und 9 erfüllt, npm run check grün. Kriterien «Leere Eingabe» und «Erfassen mit Schwierigkeitsgrad».
 
-[ ] 5  Abhaken und löschen
+[x] 5  Abhaken und löschen
 - Ziel: Abhaken mit Federn, Durchstreichen, Konfetti und witzigem Spruch; Löschen mit Toast «Rückgängig».
 - Dateien: src/features/tasks/components/TaskCard.tsx, src/features/tasks/components/TaskCard.test.tsx, src/lib/celebrate.ts, src/lib/theme.ts.
 - Test zuerst: Klick auf Checkbox setzt done und ruft celebrate auf; Löschen und «Rückgängig» stellt die Aufgabe wieder her.
 - Fertig wenn: DESIGN.md, Rezept 3 erfüllt, Zustand bleibt nach Neuladen, npm run check grün. Kriterien «Abhaken» und «Löschen mit Rückgängig».
 
-[ ] 6  Zähler und leerer Zustand
-- Ziel: Fortschrittsring zeigt gelernt/gesamt; ohne offene Aufgaben erscheint «Prüfung? Kann kommen! 🎓» statt einer offenen Kartenliste.
-- Dateien: src/components/ProgressRing.tsx, src/components/ProgressRing.test.tsx, src/features/tasks/components/EmptyState.tsx, src/App.tsx.
-- Test zuerst: Ring hat aria-label «3 von 8 erledigt»; sind alle Aufgaben erledigt, ist «Prüfung? Kann kommen! 🎓» sichtbar.
-- Fertig wenn: DESIGN.md, Rezepte 1 und 5 erfüllt, npm run check grün. Kriterien «Zähler und Fortschritt» und «Alles gelernt».
+[ ] 6  Migration Version 1 auf 2
+- Ziel: Gespeicherte Aufgaben aus der Liste (done) wandern verlustfrei in das neue Board (status).
+- Dateien: src/lib/storage.ts, src/lib/storage.test.ts.
+- Test zuerst: migrateV1toV2 mit echten Version-1-Daten setzt done:true → status 'done' und done:false → status 'todo'.
+- Fertig wenn: Migration getestet, npm run check grün. Kriterium «Daten überleben» aus F1.
+
+[ ] 7  Board-Datenmodell und moveTask
+- Ziel: Task hat status statt done; die reine Funktion moveTask verschiebt eine Karte in eine andere Spalte und Position.
+- Dateien: src/features/tasks/model.ts, src/features/tasks/model.test.ts, src/features/tasks/useTasks.ts.
+- Test zuerst: moveTask ändert Status und Reihenfolge; addTask legt mit status 'todo' an.
+- Fertig wenn: alle Model-Tests grün, npm run check grün.
+
+[ ] 8  Sprint-Kopf mit Tagen
+- Ziel: Oben stehen Sprint-Ziel und «Noch N Tage» bis zum festen Enddatum.
+- Dateien: src/lib/sprint.ts, src/lib/sprint.test.ts, src/features/tasks/components/SprintHeader.tsx, src/App.tsx.
+- Test zuerst: daysRemaining rechnet für ein Datum in 12 Tagen «12».
+- Fertig wenn: Kriterium «Sprint-Ziel und Tage» aus F1 erfüllt, npm run check grün.
+
+[ ] 9  Board mit drei Spalten
+- Ziel: Drei Spalten «Zu lernen», «Am Lernen», «Kann ich!» zeigen jede Karte in der Spalte ihres Status, Chilis bleiben sichtbar.
+- Dateien: src/features/tasks/components/Board.tsx, src/features/tasks/components/BoardColumn.tsx, src/features/tasks/components/KanbanCard.tsx, src/App.tsx.
+- Test zuerst: Board zeigt die drei Spalten und ordnet Aufgaben nach Status ein.
+- Fertig wenn: Kriterien «Drei Spalten» und «Chilis bleiben» aus F1 erfüllt, npm run check grün.
+
+[ ] 10  Drag and Drop
+- Ziel: Karten per Maus und Tastatur zwischen den Spalten und innerhalb einer Spalte ziehen; Zielspalte leuchtet; Zustand bleibt nach Neuladen.
+- Dateien: src/features/tasks/components/Board.tsx, src/features/tasks/components/BoardColumn.tsx, src/features/tasks/components/KanbanCard.tsx, src/App.tsx.
+- Test zuerst: moveTask-Test belegt das Verschieben in eine andere Spalte (Logik), dazu Komponenten-Test für den DndContext.
+- Fertig wenn: Kriterium «Drag and Drop» aus F1 erfüllt, Design Rezept 6, npm run check grün.
+

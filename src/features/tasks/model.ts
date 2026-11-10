@@ -30,3 +30,9 @@ export function toggleTask(tasks: Task[], id: string): Task[] {
 export function removeTask(tasks: Task[], id: string): Task[] {
   return tasks.filter((t) => t.id !== id)
 }
+
+export function restoreTaskAt(tasks: Task[], task: Task, index: number): Task[] {
+  const next = [...tasks]
+  next.splice(Math.min(Math.max(index, 0), next.length), 0, task)
+  return next
+}

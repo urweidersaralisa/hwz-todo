@@ -7,7 +7,7 @@ import { TaskList } from '@/features/tasks/components/TaskList'
 import { useHotkey } from '@/lib/useHotkey'
 
 export default function App() {
-  const { tasks, addTask, toggleTask, removeTask } = useTasks()
+  const { tasks, addTask, toggleTask, removeTask, restoreTask } = useTasks()
 
   useHotkey('n', () => {
     document.querySelector<HTMLInputElement>('input[aria-label="Neue Aufgabe"]')?.focus()
@@ -22,7 +22,7 @@ export default function App() {
             <p className="text-muted-foreground">Lernen mit Schärfegrad 🌶️</p>
           </header>
           <TaskInput onAdd={addTask} />
-          <TaskList tasks={tasks} onToggle={toggleTask} onRemove={removeTask} />
+          <TaskList tasks={tasks} onToggle={toggleTask} onRemove={removeTask} onRestore={restoreTask} />
         </main>
         <Toaster position="bottom-center" richColors closeButton />
       </TooltipProvider>

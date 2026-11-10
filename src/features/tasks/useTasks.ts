@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import type { Difficulty, Task } from './model'
-import { addTask, removeTask, toggleTask } from './model'
+import { addTask, removeTask, restoreTaskAt, toggleTask } from './model'
 import { loadState, saveState } from '@/lib/storage'
 
 export function useTasks() {
@@ -32,5 +32,12 @@ export function useTasks() {
     [persist, tasks],
   )
 
-  return { tasks, addTask: add, toggleTask: toggle, removeTask: remove }
+  const restore = useCallback(
+    (task: Task, index: number) => {
+      persist(restoreTaskAt(tasks, task, index))
+    },
+    [persist, tasks],
+  )
+
+  return { tasks, addTask: add, toggleTask: toggle, removeTask: remove, restoreTask: restore }
 }
